@@ -13,10 +13,10 @@ Autumn.setStatusMenuItems([
   { title: 'Bottom', onClick() { setWindow('down') }}
 ]);
 
-// Modifier keys are strongly typed to prevent typos
 const cmdOptShift: ModString[] = ['command', 'option', 'shift']
 const cmdShift: ModString[] = ['command', 'shift']
 
+// Restart Autumn (sometimes useful when switching monitors)
 Hotkey.activate(cmdOptShift, 'z', () => {
   Notification.post({
     title: 'Restarting',
@@ -27,6 +27,7 @@ Hotkey.activate(cmdOptShift, 'z', () => {
   console.log(error);
 });
 
+// Restart WiFi
 Hotkey.activate(cmdOptShift, 'w', () => {
   Notification.post({
     title: 'Restarting WiFi'
@@ -37,10 +38,8 @@ Hotkey.activate(cmdOptShift, 'w', () => {
   console.log(error);
 });
 
+// Mute toggle
 Hotkey.activate(cmdOptShift, '0', () => {
-
-  //current_vol=$(osascript -e 'output volume of (get volume settings)')
-  //osascript -e "set volume output volume $current_vol"
   let output = Shell.runSync("osascript -e 'input volume of (get volume settings)'");
   let volumeStr = output.stdout;
   let currentVolume = parseInt(volumeStr.substr(0, volumeStr.indexOf("\n")), 10);
@@ -64,6 +63,7 @@ Hotkey.activate(cmdOptShift, '0', () => {
   }
 });
 
+// Switch to USB input/output
 Hotkey.activate(cmdOptShift, '9', () => {
   let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "USB audio CODEC"`);
   console.log(output);
@@ -71,6 +71,7 @@ Hotkey.activate(cmdOptShift, '9', () => {
   console.log(output);
 });
 
+// Switch to AirPods input/output
 Hotkey.activate(cmdOptShift, '8', () => {
   let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "Thomas’s AirPods Pro"`);
   console.log(output);
@@ -78,13 +79,12 @@ Hotkey.activate(cmdOptShift, '8', () => {
   console.log(output);
 });
 
-// Pressing Cmd+Opt+Ctrl+M will maximize the window
+// Maximize the window
 Hotkey.activate(cmdOptShift, 'm', () => {
   Window.focusedWindow().maximize();
 });
 
-// Pressing Cmd+Opt+Ctrl+C centers the window on screen.
-// Adjust the percent to your liking.
+// Center the window on screen (toggles sizes)
 Hotkey.activate(cmdOptShift, 'c', () => {
   center();
 });
@@ -117,13 +117,15 @@ function center() {
   })
 });
 
-// Let's make a function to make our code shorter.
 function moveToUnit(x, y, width, height) {
   Window.focusedWindow().moveToPercentOfScreen({
     x, y, width, height
   });
 }
 
+// Toggles for taking up halves/quarters of screens 
+// (hit once with left key to get a window half the width of your display, 
+// twice to get a window that fills the left half of your display)
 function setWindow(command) {
   if (!Window.focusedWindow()) {
     return null;
