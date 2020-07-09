@@ -65,6 +65,9 @@ Hotkey.activate(cmdOptShift, '0', () => {
 
 // Switch to USB input/output
 Hotkey.activate(cmdOptShift, '9', () => {
+  Notification.post({
+    title: 'Switching to USB audio'
+  });
   let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "USB audio CODEC"`);
   console.log(output);
   output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t output -s "USB audio CODEC"`);
@@ -73,6 +76,9 @@ Hotkey.activate(cmdOptShift, '9', () => {
 
 // Switch to AirPods input/output
 Hotkey.activate(cmdOptShift, '8', () => {
+  Notification.post({
+    title: 'Switching to AirPods'
+  });
   let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "Thomas’s AirPods Pro"`);
   console.log(output);
   output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t output -s "Thomas’s AirPods Pro"`);
