@@ -1,17 +1,16 @@
 let previousCommand = '', timer = null, mouseTimer = null;
-let inputVolume;
+let inputVolume = 60;
 
 Autumn.setStatusMenuItems([
   {
     title: 'Maximize', onClick() {
       Window.focusedWindow().maximize();
-    }
-  },
+  } },
   { title: 'Center', onClick() { center() } },
   { title: 'Left', onClick() { setWindow('left') } },
   { title: 'Right', onClick() { setWindow('right') } },
   { title: 'Top', onClick() { setWindow('up') } },
-  { title: 'Bottom', onClick() { setWindow('down') } }
+  { title: 'Bottom', onClick() { setWindow('down') }}
 ]);
 
 // Modifier keys are strongly typed to prevent typos
@@ -45,14 +44,17 @@ Hotkey.activate(cmdOptShift, '0', () => {
   let output = Shell.runSync("osascript -e 'input volume of (get volume settings)'");
   let volumeStr = output.stdout;
   let currentVolume = parseInt(volumeStr.substr(0, volumeStr.indexOf("\n")), 10);
-  if (currentVolume === 0) {
+  console.log(`Current volume: ${currentVolume}`);
+  if (currentVolume < 5) {
+    console.log('Unmuting');
     Notification.post({
       title: 'Un-muting'
     });
-    console.log(`osascript -e "set volume input volume ${inputVolume}"`);
+    console.log(`Setting input volume to ${inputVolume}`);
     let output = Shell.runSync(`osascript -e "set volume input volume ${inputVolume}"`);
     console.log(output);
   } else {
+    console.log('Muting');
     Notification.post({
       title: 'Muting'
     });
@@ -60,6 +62,20 @@ Hotkey.activate(cmdOptShift, '0', () => {
     inputVolume = currentVolume;
     console.log(output);
   }
+});
+
+Hotkey.activate(cmdOptShift, '9', () => {
+  let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "USB audio CODEC"`);
+  console.log(output);
+  output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t output -s "USB audio CODEC"`);
+  console.log(output);
+});
+
+Hotkey.activate(cmdOptShift, '8', () => {
+  let output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t input -s "Thomas’s AirPods Pro"`);
+  console.log(output);
+  output = Shell.runSync(`/usr/local/Cellar/switchaudio-osx/1.0.0/SwitchAudioSource -t output -s "Thomas’s AirPods Pro"`);
+  console.log(output);
 });
 
 // Pressing Cmd+Opt+Ctrl+M will maximize the window
@@ -76,16 +92,16 @@ Hotkey.activate(cmdOptShift, 'c', () => {
 function center() {
   let percent = 0.65;
   switch (previousCommand) {
-    case 'centerA':
+    case 'centerA' :
       percent = 0.85;
       previousCommand = 'centerB';
       break;
-    case 'centerB':
+    case 'centerB' :
       percent = 0.45;
       previousCommand = 'centerC';
       break;
-    case 'centerC':
-    default:
+    case 'centerC' :
+    default :
       percent = 0.65;
       previousCommand = 'centerA';
       break;
